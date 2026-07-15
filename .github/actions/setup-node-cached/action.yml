@@ -1,0 +1,33 @@
+name: "Setup Node.js with Caching"
+description: "This action sets up Node.js and caches the node_modules directory to speed up subsequent runs."
+
+inputs:
+  node-version:
+    description: "The Node.js version to set up (e.g., 14, 16, 18, 20)."
+    required: true
+    default: "20"
+
+  working-directory:
+    description: "The working directory where the package.json is located."
+    required: true
+    default: "."
+
+runs:
+  using: "composite"
+  steps:
+    - name: "Setup Node.js"
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+
+    - name: "Cache node_modules"
+      uses: actions/cache@v4
+      with:
+        key: ${{ runner.os }}-node-${{ inputs.node-version }}-${{ hashFiles(format('{0}/package-lock.json', inputs.working-directory)) }}
+        path: ${{ inputs.working-directory }}/node_modules
+
+    - name: "Install dependencies"
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: npm ci
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}

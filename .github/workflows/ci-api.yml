@@ -10,6 +10,10 @@ on:
     paths:
       - 'services/api/**'
 
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
 jobs:
   lint:
     runs-on: ubuntu-latest
@@ -17,22 +21,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup-node-cached
         with:
           node-version: '20'
-
-      - name: Cache Node.js modules
-        id: cache
-        uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-node-${{ hashFiles('services/api/package-lock.json') }}
-          path: services/api/node_modules
-
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
-        working-directory: services/api
+          working-directory: services/api
 
       - name: Run lint
         run: npm run lint
@@ -47,20 +39,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Install Node.js
-        uses: actions/setup-node@v4
+      - uses: ./.github/actions/setup-node-cached
         with:
-          node-version: ${{ matrix.node-version }}
-      - name: Cache Node.js modules
-        id: cache
-        uses: actions/cache@v4
-        with:
-          key: ${{ runner.os }}-node-${{ hashFiles('services/api/package-lock.json') }}
-          path: services/api/node_modules
-      - name: Install dependencies
-        if: steps.cache.outputs.cache-hit != 'true'
-        run: npm ci
-        working-directory: services/api
+          node-version: '${{ matrix.node-version }}'
+          working-directory: services/api
 
       - name: Run tests
         run: npm test
