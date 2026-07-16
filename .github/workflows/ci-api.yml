@@ -10,8 +10,11 @@ on:
     paths:
       - 'services/api/**'
 
+  schedule:
+    - cron: '0 2 * * *'
+
 concurrency:
-  group: '${{ github.workflow }}-${{ github.ref }}'
+  group: '${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}'
   cancel-in-progress: true
 
 jobs:
