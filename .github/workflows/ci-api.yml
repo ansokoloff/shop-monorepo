@@ -10,8 +10,8 @@ on:
     paths:
       - 'services/api/**'
 
-  schedule:
-    - cron: '0 2 * * *'
+  # schedule:
+  #   - cron: '0 2 * * *'
 
 concurrency:
   group: '${{ github.workflow }}-${{ github.ref }}-${{ github.event_name }}'
