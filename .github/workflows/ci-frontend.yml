@@ -1,0 +1,21 @@
+name: CI - FRONTEND
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'services/frontend/**'
+  pull_request:
+    branches: [main]
+    paths:
+      - 'services/frontend/**'
+
+concurrency:
+  group: '${{ github.workflow }}-${{ github.ref }}'
+  cancel-in-progress: true
+
+jobs:
+  CI:
+    uses: ./.github/workflows/_reusable-node-ci.yml
+    with:
+      working-directory: 'services/frontend'
