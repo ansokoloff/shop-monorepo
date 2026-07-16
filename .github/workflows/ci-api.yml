@@ -15,35 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  lint:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: ./.github/actions/setup-node-cached
-        with:
-          node-version: '20'
-          working-directory: services/api
-
-      - name: Run lint
-        run: npm run lint
-        working-directory: services/api
-  test:
-    runs-on: ubuntu-latest
-    needs: lint
-    strategy:
-      matrix:
-        node-version: [18, 19, 20]
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - uses: ./.github/actions/setup-node-cached
-        with:
-          node-version: '${{ matrix.node-version }}'
-          working-directory: services/api
-
-      - name: Run tests
-        run: npm test
-        working-directory: services/api
+  CI:
+    uses: ./.github/workflows/_reusable-node-ci.yml
+    with:
+      working-directory: 'services/api'
