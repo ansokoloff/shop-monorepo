@@ -50,6 +50,13 @@ jobs:
                   overwrite: true
                   compression-level: 1
 
+            - name: Set tag
+              id: set_tag
+              run: echo "image_tag=sha-${{ github.sha }}" >> $GITHUB_OUTPUT
+
+        outputs:
+            image_tag: ${{ steps.set_tag.outputs.image_tag }}
+
     deploy-dev:
         runs-on: ubuntu-latest
         needs: build
@@ -57,6 +64,9 @@ jobs:
             name: dev
         if: inputs.environment == 'dev' || github.event_name == 'push'
         steps:
+            - name: Display image tag
+              run: echo "We are deploying the image with tag ${{needs.build.outputs.image_tag}} to the dev environment."
+
             - name: Azure Login
               uses: azure/login@v2
               with:
