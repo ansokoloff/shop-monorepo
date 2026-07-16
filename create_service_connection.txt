@@ -1,0 +1,12 @@
+@'
+{
+  "name": "github-actions-prod",
+  "issuer": "https://token.actions.githubusercontent.com",
+  "subject": "repo:ansokoloff/shop-monorepo:environment:prod",
+  "audiences": ["api://AzureADTokenExchange"]
+}
+'@ | Set-Content federated-credential.json
+
+az ad app federated-credential create `
+  --id c2d715f4-8e7e-4d3a-8a84-88dcc10b28ec `
+  --parameters @federated-credential.json
