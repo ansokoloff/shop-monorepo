@@ -82,6 +82,8 @@ jobs:
             - name: Build and push Docker image to GitHub Container Registry
               uses: docker/build-push-action@v7
               with:
+                  context: services/api
+                  file: services/api/Dockerfile
                   push: true
                   tags: ghcr.io/my-api:${{ needs.build.outputs.image_tag }}
 
