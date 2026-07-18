@@ -3,7 +3,7 @@ resource "azurerm_resource_group" "main" {
   location = var.location
 
   tags = {
-    managed_by = "terraform"
+    managed_by  = "terraform"
     environment = var.environment
   }
 }
