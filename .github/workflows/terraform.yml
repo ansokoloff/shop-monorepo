@@ -53,7 +53,7 @@ jobs:
 
             - name: Terraform Plan
               id: plan
-              run: terraform plan -no-color -out=tfplan
+              run: terraform plan -no-color -out=tfplan -var="environment=dev"
 
             - name: Post PR Comment
               if: github.event_name == 'pull_request'
@@ -64,4 +64,4 @@ jobs:
 
             - name: Terraform Apply
               if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-              run: terraform apply -auto-approve -no-color
+              run: terraform apply -auto-approve -var="environment=dev"-no-color

@@ -1,5 +1,6 @@
 variable "environment" {
-  type = string
+  type    = string
+  default = "dev"
 }
 
 variable "location" {
