@@ -38,7 +38,7 @@ runcmd:
     [Service]
     Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
     Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
-    Environment="JENKINS_ADMIN_PASSWORD=\"${jenkins_admin_password}\""
+    Environment="JENKINS_ADMIN_PASSWORD=${jenkins_admin_password}"
     EOF
   - systemctl daemon-reload
   - systemctl enable jenkins
