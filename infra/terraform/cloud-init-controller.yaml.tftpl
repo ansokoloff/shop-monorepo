@@ -24,7 +24,8 @@ runcmd:
   - systemctl stop jenkins
 
   # Плагин Configuration as Code
-  - JENKINS_HOME=/var/lib/jenkins jenkins-plugin-cli --plugins configuration-as-code credentials matrix-auth
+  - curl -L https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar -o /tmp/jenkins-plugin-manager.jar
+  - java -jar /tmp/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war -d /var/lib/jenkins/plugins --plugins configuration-as-code credentials matrix-auth
 
   # Файл конфигурации JCasC
   - mkdir -p /var/lib/jenkins/casc_configs
