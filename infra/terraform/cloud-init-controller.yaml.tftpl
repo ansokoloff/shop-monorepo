@@ -9,7 +9,7 @@ packages:
 
 write_files:
   - path: /tmp/jenkins-casc.yaml
-    permissions: '0644'
+    permissions: "0644"
     content: |
       ${indent(6, jenkins_casc_content)}
 
@@ -24,8 +24,7 @@ runcmd:
   - systemctl stop jenkins
 
   # Плагин Configuration as Code
-  - mkdir -p /var/lib/jenkins/plugins
-  - curl -fsSL https://updates.jenkins.io/latest/configuration-as-code.hpi -o /var/lib/jenkins/plugins/configuration-as-code.hpi
+  - JENKINS_HOME=/var/lib/jenkins jenkins-plugin-cli --plugins configuration-as-code credentials matrix-auth
 
   # Файл конфигурации JCasC
   - mkdir -p /var/lib/jenkins/casc_configs
@@ -34,12 +33,13 @@ runcmd:
 
   # Отключаем мастер первичной настройки и подключаем JCasC
   - |
-    cat >> /etc/default/jenkins <<'EOF'
-    CASC_JENKINS_CONFIG="/var/lib/jenkins/casc_configs/jenkins.yaml"
-    ADMIN_PASSWORD="${jenkins_admin_password}"
-    JAVA_ARGS="-Djenkins.install.runSetupWizard=false"
+    mkdir -p /etc/systemd/system/jenkins.service.d
+    cat >> /etc/systemd/system/jenkins.service.d/override.conf <<'EOF'
+    [Service]
+    Environment="JAVA_OPTS=-Djenkins.install.runSetupWizard=false"
+    Environment="CASC_JENKINS_CONFIG=/var/lib/jenkins/casc_configs/jenkins.yaml"
+    Environment="JENKINS_ADMIN_PASSWORD=\"${jenkins_admin_password}\""
     EOF
-
   - systemctl daemon-reload
   - systemctl enable jenkins
   - systemctl start jenkins
