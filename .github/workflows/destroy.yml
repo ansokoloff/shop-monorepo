@@ -41,6 +41,7 @@ jobs:
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+
       - name: Terraform Init
         run: terraform init
 
@@ -60,7 +61,4 @@ jobs:
           working-directory: infra/terraform
 
       - name: Terraform Apply
-        env:
-          TF_VAR_jenkins_admin_password: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
-
-        run: terraform apply -auto-approve -var="environment=dev"
+        run: terraform destroy -auto-approve -var="environment=dev"

@@ -9,7 +9,7 @@ terraform {
     resource_group_name  = "learn-k8s"
     storage_account_name = "petkeeparctic"
     container_name       = "tfstate"
-    key                  = "shop-monorepo.tfstate"
+    key                  = "jenkins.tfstate"
   }
 }
 

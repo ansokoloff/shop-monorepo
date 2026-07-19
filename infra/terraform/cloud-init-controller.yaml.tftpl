@@ -1,0 +1,41 @@
+#cloud-config
+package_update: true
+package_upgrade: false
+
+packages:
+  - fontconfig
+  - openjdk-21-jre-headless
+
+write_files:
+  - path: /tmp/jenkins-casc.yaml
+    permissions: '0644'
+    content: |
+      ${indent(6, jenkins_casc_content)}
+
+runcmd:
+  # Установка Jenkins
+  - curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key -o /usr/share/keyrings/jenkins-keyring.asc
+  - echo "deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/" > /etc/apt/sources.list.d/jenkins.list
+  - apt-get update
+  - apt-get install -y jenkins
+  - systemctl stop jenkins
+
+  # Плагин Configuration as Code
+  - curl -fsSL https://updates.jenkins.io/latest/configuration-as-code.hpi -o /var/lib/jenkins/plugins/configuration-as-code.hpi
+
+  # Файл конфигурации JCasC
+  - mkdir -p /var/lib/jenkins/casc_configs
+  - mv /tmp/jenkins-casc.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
+  - chown -R jenkins:jenkins /var/lib/jenkins/plugins /var/lib/jenkins/casc_configs
+
+  # Отключаем мастер первичной настройки и подключаем JCasC
+  - |
+    cat >> /etc/default/jenkins <<'EOF'
+    CASC_JENKINS_CONFIG="/var/lib/jenkins/casc_configs/jenkins.yaml"
+    ADMIN_PASSWORD="${jenkins_admin_password}"
+    JAVA_ARGS="-Djenkins.install.runSetupWizard=false"
+    EOF
+
+  - systemctl daemon-reload
+  - systemctl enable jenkins
+  - systemctl start jenkins
