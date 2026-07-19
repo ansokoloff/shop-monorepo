@@ -61,6 +61,7 @@ jobs:
               with:
                   token: ${{ github.token }}
                   planfile: tfplan
+                  working-directory: infra/terraform
 
             - name: Terraform Apply
               if: github.ref == 'refs/heads/main' && github.event_name == 'push'
