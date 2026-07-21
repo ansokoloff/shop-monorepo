@@ -20,7 +20,7 @@ jenkins:
       allowsSignup: false
       users:
         - id: "admin"
-          password: "${JENKINS_ADMIN_PASSWORD}"
+          password: "$${JENKINS_ADMIN_PASSWORD}"
 
   authorizationStrategy:
     globalMatrix:
@@ -40,5 +40,5 @@ jenkins:
             credentialsId: "agent-ssh-key"
             launchTimeoutSeconds: 60
             maxNumRetries: 3
-            retryWaitTimeSeconds: 15
+            retryWaitTime: 15
             tcpNoDelay: true
