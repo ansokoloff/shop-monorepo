@@ -45,24 +45,6 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Validate
-        run: terraform validate
-
-      - name: Terraform Plan
-        id: plan
-        env:
-          TF_VAR_jenkins_admin_password: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
-          TF_VAR_ssh_public_key: ${{ secrets.SSH_PUBLIC_KEY }}
-        run: terraform plan -destroy -no-color -input=false -out=tfplan -var="environment=dev"
-
-      - name: Post PR Comment
-        if: github.event_name == 'pull_request'
-        uses: borchero/terraform-plan-comment@v2
-        with:
-          token: ${{ github.token }}
-          planfile: tfplan
-          working-directory: infra/terraform
-
       - name: Terraform Apply
         env:
           TF_VAR_jenkins_admin_password: ${{ secrets.JENKINS_ADMIN_PASSWORD }}
