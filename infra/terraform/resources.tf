@@ -165,10 +165,9 @@ resource "azurerm_linux_virtual_machine" "controller" {
   }
 
   custom_data = base64encode(templatefile("${path.module}/cloud-init-controller.yaml.tftpl", {
-    jenkins_casc_content = templatefile("${path.module}/jenkins-casc.yaml", {
-      jenkins_agent_private_key = var.jenkins_agent_private_key
-    })
-    jenkins_admin_password = var.jenkins_admin_password
+    jenkins_casc_content      = file("${path.module}/jenkins-casc.yaml")
+    jenkins_admin_password    = var.jenkins_admin_password
+    jenkins_agent_private_key = var.jenkins_agent_private_key
   }))
 
   tags = {
