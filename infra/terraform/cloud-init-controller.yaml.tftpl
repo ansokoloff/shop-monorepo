@@ -1,8 +1,6 @@
 #cloud-config
 package_update: true
 package_upgrade: false
-bootcmd:
-  - mkdir -p /var/lib/jenkins/secrets
 
 packages:
   - fontconfig
@@ -14,10 +12,7 @@ write_files:
     permissions: "0644"
     content: |
       ${indent(6, jenkins_casc_content)}
-  - path: /var/lib/jenkins/secrets/agent-key
-    permissions: "0600"
-    encoding: b64
-    content: ${jenkins_agent_private_key_b64}
+
 runcmd:
   # Установка Jenkins
   - mkdir -p /usr/share/keyrings
@@ -30,8 +25,7 @@ runcmd:
 
   # Плагин Configuration as Code
   - curl -L https://github.com/jenkinsci/plugin-installation-manager-tool/releases/download/2.15.0/jenkins-plugin-manager-2.15.0.jar -o /tmp/jenkins-plugin-manager.jar
-  - java -jar /tmp/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war -d /var/lib/jenkins/plugins --plugins configuration-as-code credentials matrix-auth
-
+  - java -jar /tmp/jenkins-plugin-manager.jar --war /usr/share/java/jenkins.war -d /var/lib/jenkins/plugins --plugins configuration-as-code credentials matrix-auth ssh-slaves
   # Файл конфигурации JCasC
   - mkdir -p /var/lib/jenkins/casc_configs
   - mv /tmp/jenkins-casc.yaml /var/lib/jenkins/casc_configs/jenkins.yaml

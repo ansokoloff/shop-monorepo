@@ -17,7 +17,7 @@ variable "ssh_public_key" {
   type        = string
   description = "SSH public key used to authenticate to the VMs"
 }
-variable "jenkins_agent_private_key_b64" {
+variable "jenkins_agent_private_key" {
   type        = string
   description = "Base64 encoded private key for the Jenkins agent"
   sensitive   = true

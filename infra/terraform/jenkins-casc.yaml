@@ -1,19 +1,19 @@
+credentials:
+  system:
+    domainCredentials:
+      - credentials:
+          - basicSSHUserPrivateKey:
+              scope: GLOBAL
+              id: "agent-ssh-key"
+              username: "adminuser"
+              description: "SSH Private Key for Agent"
+              privateKeySource:
+                directEntry:
+                  privateKey: |
+                    ${indent(6, jenkins_agent_private_key)}
 jenkins:
   systemMessage: "Jenkins Controller — лаборатория, поднята через Terraform + JCasC"
   numExecutors: 0
-  credentials:
-    system:
-      domainCredentials:
-        - credentials:
-            - basicSSHUserPrivateKey:
-                scope: GLOBAL
-                id: "agent-ssh-key"
-                username: "adminuser"
-                description: "SSH Private Key for Agent"
-                privateKeySource:
-                  fileOnMaster:
-                    privateKeyFile: "/var/lib/jenkins/secrets/agent-key"
-
   securityRealm:
     local:
       allowsSignup: false
@@ -27,7 +27,7 @@ jenkins:
         - "Overall/Administer:admin"
 
   nodes:
-    - permanentAgent:
+    - permanent:
         name: "agent-01"
         remoteFS: "/home/adminuser/jenkins"
         numExecutors: 2
