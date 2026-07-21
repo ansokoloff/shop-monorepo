@@ -19,7 +19,7 @@ variable "ssh_public_key" {
 }
 variable "jenkins_agent_private_key" {
   type        = string
-  description = "RAW private key content (PEM format) for SSH authentication to the Jenkins agent. Must start with '-----BEGIN' and contain the full key including newlines."
+  description = "Base64-encoded private key (PEM format) for SSH authentication to the Jenkins agent. Store the output of `[Convert]::ToBase64String([IO.File]::ReadAllBytes(<keyfile>))` as the secret value to avoid newline/whitespace corruption."
   sensitive   = true
 }
 
