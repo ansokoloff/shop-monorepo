@@ -51,6 +51,17 @@ resource "azurerm_network_security_group" "controller" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+  security_rule {
+    name                       = "Allow-JNLP"
+    priority                   = 105
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "50000"
+    source_address_prefix      = "VirtualNetwork"
+    destination_address_prefix = "*"
+  }
 
   security_rule {
     name                       = "Allow-Jenkins-UI"
@@ -105,7 +116,8 @@ resource "azurerm_network_interface" "agent" {
   ip_configuration {
     name                          = "internal"
     subnet_id                     = azurerm_subnet.main.id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
+    private_ip_address            = var.jenkins_agent_private_ip
   }
 }
 
@@ -153,8 +165,9 @@ resource "azurerm_linux_virtual_machine" "controller" {
   }
 
   custom_data = base64encode(templatefile("${path.module}/cloud-init-controller.yaml.tftpl", {
-    jenkins_casc_content   = file("${path.module}/jenkins-casc.yaml")
-    jenkins_admin_password = var.jenkins_admin_password
+    jenkins_casc_content          = file("${path.module}/jenkins-casc.yaml")
+    jenkins_admin_password        = var.jenkins_admin_password
+    jenkins_agent_private_key_b64 = var.jenkins_agent_private_key_b64
   }))
 
   tags = {
@@ -193,8 +206,9 @@ resource "azurerm_linux_virtual_machine" "agent" {
     version   = "latest"
   }
 
-  custom_data = base64encode(templatefile("${path.module}/cloud-init-agent.yaml", {
-    admin_username = var.admin_username
+  custom_data = base64encode(templatefile("${path.module}/cloud-init-agent.yaml.tftpl", {
+    admin_username           = var.admin_username
+    jenkins_agent_public_key = var.jenkins_agent_public_key
   }))
 
   tags = {

@@ -1,6 +1,8 @@
 #cloud-config
 package_update: true
 package_upgrade: false
+bootcmd:
+  - mkdir -p /var/lib/jenkins/secrets
 
 packages:
   - fontconfig
@@ -12,7 +14,10 @@ write_files:
     permissions: "0644"
     content: |
       ${indent(6, jenkins_casc_content)}
-
+  - path: /var/lib/jenkins/secrets/agent-key
+    permissions: "0600"
+    encoding: b64
+    content: ${jenkins_agent_private_key_b64}
 runcmd:
   # Установка Jenkins
   - mkdir -p /usr/share/keyrings
@@ -30,7 +35,7 @@ runcmd:
   # Файл конфигурации JCasC
   - mkdir -p /var/lib/jenkins/casc_configs
   - mv /tmp/jenkins-casc.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
-  - chown -R jenkins:jenkins /var/lib/jenkins/plugins /var/lib/jenkins/casc_configs
+  - chown -R jenkins:jenkins /var/lib/jenkins/plugins /var/lib/jenkins/casc_configs /var/lib/jenkins/secrets/agent-key
 
   # Отключаем мастер первичной настройки и подключаем JCasC
   - |

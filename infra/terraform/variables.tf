@@ -17,6 +17,23 @@ variable "ssh_public_key" {
   type        = string
   description = "SSH public key used to authenticate to the VMs"
 }
+variable "jenkins_agent_private_key_b64" {
+  type        = string
+  description = "Base64 encoded private key for the Jenkins agent"
+  sensitive   = true
+}
+
+variable "jenkins_agent_public_key" {
+  type        = string
+  description = "SSH public key used to authenticate to the Jenkins agent VM"
+  sensitive   = true
+}
+
+variable "jenkins_agent_private_ip" {
+  type        = string
+  description = "Private IP address for the Jenkins agent VM"
+  default     = "10.0.1.22"
+}
 
 variable "vm_size" {
   type    = string

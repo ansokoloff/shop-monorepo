@@ -1,6 +1,18 @@
 jenkins:
   systemMessage: "Jenkins Controller — лаборатория, поднята через Terraform + JCasC"
   numExecutors: 0
+  credentials:
+    system:
+      domainCredentials:
+        - credentials:
+            - basicSSHUserPrivateKey:
+                scope: GLOBAL
+                id: "agent-ssh-key"
+                username: "adminuser"
+                description: "SSH Private Key for Agent"
+                privateKeySource:
+                  fileOnMaster:
+                    privateKeyFile: "/var/lib/jenkins/secrets/agent-key"
 
   securityRealm:
     local:
@@ -13,3 +25,19 @@ jenkins:
     globalMatrix:
       permissions:
         - "Overall/Administer:admin"
+
+  nodes:
+    - permanentAgent:
+        name: "agent-01"
+        remoteFS: "/home/adminuser/jenkins"
+        numExecutors: 2
+        labelString: "linux docker"
+        launcher:
+          ssh:
+            host: "10.0.1.22"
+            port: 22
+            credentialsId: "agent-ssh-key"
+            launchTimeoutSeconds: 60
+            maxNumRetries: 3
+            retryWaitTimeSeconds: 15
+            tcpNoDelay: true

@@ -24,3 +24,6 @@ runcmd:
   # Node.js + npm
   - curl -fsSL https://deb.nodesource.com/setup_20.x | bash -
   - apt-get install -y nodejs
+
+ssh_authorized_keys:
+  - ${jenkins_agent_public_key}
