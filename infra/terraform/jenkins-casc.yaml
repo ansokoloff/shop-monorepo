@@ -11,6 +11,7 @@ credentials:
                 directEntry:
                   privateKey: |
                     ${indent(6, jenkins_agent_private_key)}
+
 jenkins:
   systemMessage: "Jenkins Controller — лаборатория, поднята через Terraform + JCasC"
   numExecutors: 0

@@ -19,7 +19,7 @@ variable "ssh_public_key" {
 }
 variable "jenkins_agent_private_key" {
   type        = string
-  description = "Base64 encoded private key for the Jenkins agent"
+  description = "RAW private key content (PEM format) for SSH authentication to the Jenkins agent. Must start with '-----BEGIN' and contain the full key including newlines."
   sensitive   = true
 }
 
