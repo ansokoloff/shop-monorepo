@@ -35,7 +35,7 @@ runcmd:
   # Файл конфигурации JCasC
   - mkdir -p /var/lib/jenkins/casc_configs
   - mv /tmp/jenkins-casc.yaml /var/lib/jenkins/casc_configs/jenkins.yaml
-  - chown -R jenkins:jenkins /var/lib/jenkins/plugins /var/lib/jenkins/casc_configs /var/lib/jenkins/secrets/agent-key
+  - chown -R jenkins:jenkins /var/lib/jenkins/
 
   # Отключаем мастер первичной настройки и подключаем JCasC
   - |
